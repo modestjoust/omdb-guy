@@ -1,15 +1,14 @@
 import {
   REQUEST_MOVIES, RECEIVE_MOVIES,
   REQUEST_MOVIE_DETAILS, RECEIVE_MOVIE_DETAILS,
-  STAR_MOVIE,
-  BACK_TO_LIST,
-  VIEW_SEARCH, VIEW_STARRED
+  STAR_MOVIE, UNSTAR_MOVIE
 } from '../actions'
 
 function movies(state = {
   isFetching: false,
   items: [],
-  starred: []
+  starred: [],
+  totalStarred: 0
 }, action) {
   switch (action.type) {
     case REQUEST_MOVIES:
@@ -35,6 +34,26 @@ function movies(state = {
         item: action.movie,
         lastUpdated: action.receivedAt,
         viewingMovieDetails: true
+      })
+    case STAR_MOVIE:
+      return Object.assign({}, state, {
+        starred: [{
+          Poster: action.movie.Poster,
+          Title: action.movie.Title,
+          Type: action.movie.Type,
+          Year: action.movie.Year,
+          imdbID: action.movie.imdbID,
+          starredDate: action.starredDate
+        }, ...state.starred],
+        totalStarred: state.totalStarred + 1
+      })
+    case UNSTAR_MOVIE:
+      var index = state.starred.findIndex((el, ind, arr) => {
+        return el.imdbID === action.movie.imdbID
+      })
+      return Object.assign({}, state, {
+        starred: [...state.starred.slice(0, index), ...state.starred.slice(index + 1)],
+        totalStarred: state.totalStarred - 1
       })
     default:
       return state

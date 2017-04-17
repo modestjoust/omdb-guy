@@ -10,6 +10,7 @@ export default class MoviesApp extends React.Component {
 
     this.onMovieClick = this.onMovieClick.bind(this);
     this.onMovieStar = this.onMovieStar.bind(this);
+    this.onMovieUnstar = this.onMovieUnstar.bind(this);
     this.onFetchMovies = this.onFetchMovies.bind(this);
     this.goBackToList = this.goBackToList.bind(this);
     this.handlePageBack = this.handlePageBack.bind(this);
@@ -27,8 +28,12 @@ export default class MoviesApp extends React.Component {
     this.props.onMovieClick(id);
   }
 
-  onMovieStar(id) {
-    this.props.onMovieStar(id);
+  onMovieStar(movie) {
+    this.props.onMovieStar(movie);
+  }
+
+  onMovieUnstar(movie) {
+    this.props.onMovieUnstar(movie);
   }
 
   onFetchMovies(string, page) {
@@ -56,61 +61,66 @@ export default class MoviesApp extends React.Component {
   }
 
   render() {
-    console.log('MoviesApp ', this.props);
-
     var moviesAppStyle = {
-
+      height: 'calc(100% - 60px)',
     };
 
     var navStyle = {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignContent: 'center',
+      borderBottom: '1px solid #eee'
+    }
 
+    var navLinkStyle = {
+      padding: '12px 36px 0px'
     }
 
     var contentStyle = {
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'space-between'
+      justifyContent: 'space-between',
+      height: '100%',
     }
-
-    var searchStyle = {};
-
-    var moviesListSyle = {};
-
-    var recentSearchesListStyle = {};
 
     return (
       <div style={moviesAppStyle}>
 
         <div style={navStyle}>
-          <a href="#" onClick={this.setViewSearch}>Search Movies</a>
-          <a href="#" onClick={this.setViewStarred}>My Starred</a>
+          <a href="#" onClick={this.setViewSearch} style={navLinkStyle}><h5>Search Movies</h5></a>
+          <a href="#" onClick={this.setViewStarred} style={navLinkStyle}><h5>My Favorites</h5></a>
         </div>
 
         <div style={contentStyle}>
-          <div>
+          <div className="height-100">
             <Search
               onFetchMovies={this.onFetchMovies}
-              style={searchStyle}
             />
             <RecentSearchesList
               search={this.props.search}
               onSearchItemClick={this.onSearchItemClick}
-              style={recentSearchesListStyle}
             />
           </div>
           {this.props.views.viewingMovieDetails ?
             <MovieDetails
               movie={this.props.movies.item}
+              starredMovies={this.props.movies.starred}
               goBackToList={this.goBackToList}
+              onMovieStar={this.onMovieStar}
+              onMovieUnstar={this.onMovieUnstar}
             /> :
             <MoviesList
               movies={this.props.views.viewingStarred ? this.props.movies.starred : this.props.movies.items}
+              starredMovies={this.props.movies.starred}
               page={this.props.movies.page}
-              totalResults={this.props.movies.totalResults}
+              totalResults={this.props.views.viewingStarred ? this.props.movies.totalStarred : this.props.movies.totalResults}
+              viewingStarred={this.props.views.viewingStarred}
               onMovieClick={this.onMovieClick}
+              onMovieStar={this.onMovieStar}
+              onMovieUnstar={this.onMovieUnstar}
               handlePageBack={this.handlePageBack}
               handlePageForward={this.handlePageForward}
-              style={moviesListSyle}
             />
           }
         </div>

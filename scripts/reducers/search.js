@@ -30,11 +30,6 @@ function search(state = {
         })
       } else {
         // Else splice old and push new
-        // console.log('current: ', state.recentSearches)
-        // var sliced = state.recentSearches.slice();
-        // console.log('sliced: ', sliced)
-        // var spliced = sliced.splice(index, 1);
-        // console.log('new: ', spliced);
         return Object.assign({}, state, {
           recentSearches: [{
             search: action.search,

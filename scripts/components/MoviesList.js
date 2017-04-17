@@ -14,34 +14,84 @@ export default class MoviesList extends React.Component {
     this.props.onMovieClick(id)
   }
 
-  onMovieStar(id) {
-    this.props.onMovieStar(id)
+  onMovieStar(movie) {
+    if (!this.isStarred(movie)) {
+      this.props.onMovieStar(movie)
+    } else {
+      this.props.onMovieUnstar(movie)
+    }
+  }
+
+  isStarred(movie) {
+    var index = this.props.starredMovies.findIndex((el, ind, arr) => {
+      return movie.imdbID === el.imdbID;
+    });
+    return index >= 0;
   }
 
   render() {
-    // console.log('MoviesList ', this.props)
+    var hasMovies = this.props.movies && this.props.movies.length;
     var movieListStyle = {
-      width: '100%'
+      paddingTop: '30px',
     }
-    return (
-      <div style={movieListStyle}>
 
-        {this.props.movies && this.props.movies.length ?
-          this.props.movies.map((movie) => {
-            return (
-              <MovieItem
-                key={movie.imdbID}
-                data={movie}
-                onMovieClick={() => this.props.onMovieClick(movie.imdbID)}
-                onMovieStar={this.onMovieStar}
-              />
-            )
-          })
+    var noMoviesStyle = {
+      backgroundColor: '#cfd2e7',
+      textAlign: 'center',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      borderRadius: '.4rem',
+      WebkitBoxShadow: 'inset 3px 3px 14px -7px rgba(0,0,0,0.75)',
+      MozBoxShadow: 'inset 3px 3px 14px -7px rgba(0,0,0,0.75)',
+      boxShadow: 'inset 3px 3px 14px -7px rgba(0,0,0,0.75)'
+    }
+
+    var tableHeaderStyle = {
+      backgroundColor: '#f4f4f4',
+      borderRadius: '.4rem',
+      height: '38px',
+    }
+
+    return (
+      <div className="container" style={movieListStyle}>
+
+        {hasMovies ?
+          <div>
+            <div className="row" style={tableHeaderStyle}>
+              <div className="column column-60">TITLE</div>
+              <div className="column">RELEASE YEAR</div>
+              {this.props.viewingStarred ?
+                <div className="column">ADDED</div>
+                  : null
+              }
+              <div className="column"></div>
+            </div>
+            {this.props.movies.map((movie) => {
+              return (
+                <MovieItem
+                  key={movie.imdbID}
+                  data={movie}
+                  isStarred={this.isStarred(movie)}
+                  onMovieClick={() => this.props.onMovieClick(movie.imdbID)}
+                  onMovieStar={this.onMovieStar}
+                  viewingStarred={this.props.viewingStarred}
+                />
+              )
+            })}
+          </div>
           :
-          <div style={{backgroundColor: '#dde'}}>
-            No movies :(
+          <div className="row height-100" style={noMoviesStyle}>
+            <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center'}}>
+              <h2>There's nothing here! <i className="fa fa-frown-o"></i></h2>
+              {this.props.viewingStarred ?
+                <p>Search for some movies, then click the star to add them to your favorites!</p> :
+                <p>Try searching for some movies!</p>
+              }
+            </div>
           </div>
         }
+
         {this.props.movies && this.props.movies.length ?
           <Pagination
             page={this.props.page}

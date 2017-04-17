@@ -8,14 +8,15 @@ export default class SearchBar extends React.Component {
       searchString: ''
     }
 
-    // this.handleClick = this.handleClick.bind(this)
+    this.handleClick = this.handleClick.bind(this)
     this.handleInput = this.handleInput.bind(this)
   }
 
-  // handleClick() {
-  //   console.log('clicky')
-  //   this.props.onFetchMovies(this.state.searchString)
-  // }
+  handleClick(e) {
+    e.preventDefault()
+    if (this.state.searchString.length > 0)
+      this.props.onFetchMovies(this.state.searchString, 1)
+  }
 
   handleInput(e) {
     let t = e.target;
@@ -27,10 +28,15 @@ export default class SearchBar extends React.Component {
   render() {
     return (
       <div>
-        <input value={this.state.searchString} onChange={this.handleInput} />
-        <button onClick={() => this.props.onFetchMovies(this.state.searchString, 1)}>
-          search
-        </button>
+        <form>
+          <fieldset>
+            <label htmlFor="titleSearch">Search by title:</label>
+            <input type="text" id="titleSearch" value={this.state.searchString} onChange={this.handleInput} />
+            <button onClick={this.handleClick}>
+              search
+            </button>
+          </fieldset>
+        </form>
       </div>
     );
   }

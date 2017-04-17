@@ -28,7 +28,6 @@ function requestMovies(string, page) {
 
 export const RECEIVE_MOVIES = 'RECEIVE_MOVIES'
 function receiveMovies(string, json) {
-  console.log('receive movies json: ', json)
   return {
     type: RECEIVE_MOVIES,
     string,
@@ -48,7 +47,6 @@ function requestMovieDetails(id) {
 
 export const RECEIVE_MOVIE_DETAILS = 'RECEIVE_MOVIE_DETAILS'
 function receiveMovieDetails(id, json) {
-  console.log('receive movie, ', json)
   return {
     type: RECEIVE_MOVIE_DETAILS,
     id,
@@ -58,10 +56,19 @@ function receiveMovieDetails(id, json) {
 }
 
 export const STAR_MOVIE = 'STAR_MOVIE'
-export const starMovie = (id) => {
+export const starMovie = (movie) => {
   return {
     type: STAR_MOVIE,
-    id
+    starredDate: Date.now(),
+    movie
+  }
+}
+
+export const UNSTAR_MOVIE = 'UNSTAR_MOVIE'
+export const unstarMovie = (movie) => {
+  return {
+    type: UNSTAR_MOVIE,
+    movie
   }
 }
 
@@ -86,24 +93,6 @@ export const viewStarred = () => {
   }
 }
 
-// function fetchPosts(subreddit) {
-//   return dispatch => {
-//     dispatch(requestPosts(subreddit))
-//     return fetch(`https://www.reddit.com/r/${subreddit}.json`)
-//       .then(response => response.json())
-//       .then(json => dispatch(receivePosts(subreddit, json)))
-//   }
-// }
-
-// function fetchMovies(string, page) {
-//   return dispatch => {
-//     dispatch(requestMovies(string))
-//     return fetch('http://www.omdbapi.com/?s=' + string)
-//       .then(response => response.json())
-//       .then(json => dispatch(receiveMovies(string, json)))
-//   }
-// }
-
 function fetchMovieDetails(id) {
   return dispatch => {
     dispatch(requestMovieDetails(id))
@@ -115,7 +104,6 @@ function fetchMovieDetails(id) {
 
 export function fetchMovies(string, pg) {
   return function(dispatch) {
-    console.log('fetching movies with page: ', pg)
     var page = pg ? pg : 1
     dispatch(viewSearch())
     dispatch(requestMovies(string, page))
@@ -127,7 +115,6 @@ export function fetchMovies(string, pg) {
 }
 
 export function fetchMovieDetails(id) {
-  console.log('fetching movie details, id=', id)
   return dispatch => {
     dispatch(requestMovieDetails(id))
     return fetch('http://www.omdbapi.com/?i=' + id) //+ '&plot=full')

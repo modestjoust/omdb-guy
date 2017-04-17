@@ -1,28 +1,11 @@
 import { connect } from 'react-redux'
-import { fetchMovies, fetchMovieDetails, starMovie, backToList, viewSearch, viewStarred } from '../actions'
+import { fetchMovies, fetchMovieDetails, starMovie, unstarMovie, backToList, viewSearch, viewStarred } from '../actions'
 import MoviesApp from '../components/MoviesApp'
-
-const getVisibleMovies = (movies, filter) => {
-  switch (filter) {
-    case 'SHOW_ALL':
-      return movies
-    case 'SHOW_COMPLETED':
-      return movies.filter(t => t.completed)
-    case 'SHOW_ACTIVE':
-      return movies.filter(t => !t.completed)
-  }
-}
-
-const getLastTen = (search) => {
-  // return recentSearches//.slice(0,8);
-  return search
-}
 
 const mapStateToProps = (state) => {
   return {
-    // movies: getVisibleMovies(state.movies, state.visibilityFilter)
     movies: state.movies,
-    search: getLastTen(state.search),
+    search: state.search,
     views: state.views
   }
 }
@@ -30,14 +13,16 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onFetchMovies: (string, page) => {
-      console.log('dispatching fetchMovies with page ', page)
       dispatch(fetchMovies(string, page))
     },
     onMovieClick: (id) => {
       dispatch(fetchMovieDetails(id))
     },
-    onMovieStar: (id) => {
-      dispatch(starMovie(id))
+    onMovieStar: (movie) => {
+      dispatch(starMovie(movie))
+    },
+    onMovieUnstar: (movie) => {
+      dispatch(unstarMovie(movie))
     },
     onSearchItemClick: (string) => {
       dispatch(fetchMovies(string, 1))

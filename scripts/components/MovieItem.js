@@ -16,6 +16,8 @@ export default class MovieItem extends React.Component {
     var year = this.props.data.Year
     var type = this.props.data.Type
     var id = this.props.data.imdbID
+    var starredDate = this.props.data.starredDate
+
     var movieItemStyle = {
       display: 'flex',
       flexDirection: 'row',
@@ -23,6 +25,7 @@ export default class MovieItem extends React.Component {
       borderBottom: '1px solid #ddd',
       padding: '5px 0px 5px 0px'
     }
+
     var movieItemHoveredStyle = {
       display: 'flex',
       flexDirection: 'row',
@@ -31,16 +34,22 @@ export default class MovieItem extends React.Component {
       padding: '5px 0px 5px 0px',
       backgroundColor: '#eee'
     }
+
     return (
-      <div style={this.state.hovered ? movieItemHoveredStyle : movieItemStyle}
+      <div className="row" style={this.state.hovered ? movieItemHoveredStyle : movieItemStyle}
         onClick={() => this.props.onMovieClick(id)}
         onMouseEnter={() => this.setState({hovered: true})}
         onMouseLeave={() => this.setState({hovered: false})}>
-        <div >{title}</div>
-        <div >{year}</div>
-        <div >{type}</div>
-        <div >{id}</div>
-        <ButtonStar onMovieStar={() => this.props.onMovieStar(id)}/>
+        <div className="column column-60">{title}</div>
+        <div className="column">{year}</div>
+        {this.props.viewingStarred ?
+          <div className="column">{(new Date(starredDate)).toLocaleDateString()}</div> :
+          null
+        }
+        <ButtonStar
+          onMovieStar={() => this.props.onMovieStar(this.props.data)}
+          isStarred={this.props.isStarred}
+        />
       </div>
     );
   }
